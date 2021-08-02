@@ -1,11 +1,15 @@
 ---
 # tasks file for prometheus-client
 
+# Check for current node_exporter install
 
 - name: check if node exporter exist
   stat:
     path: "{{ node_exporter_bin }}"
   register: __check_node_exporter_present
+
+
+# Prep system for node_exporter
 
 - name: create node exporter user
   user:
@@ -21,6 +25,9 @@
     state: directory
     owner: "{{ node_exporter_user }}"
     group: "{{ node_exporter_group }}"
+
+
+#Download and install node_exporter
 
 - name: download and unzip node exporter if not exist
   unarchive:
@@ -45,6 +52,9 @@
     path: /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/
     state: absent
 
+
+#Install and start node_exporter service
+
 - name: install service
   template:
     src: node_exporter.service.j2
@@ -53,11 +63,3 @@
     group: root
     mode: 0755
   notify: reload_daemon_and_restart_node_exporter
-
-- meta: flush_handlers
-
-- name: service always started
-  systemd:
-    name: node_exporter
-    state: started
-    enabled: yes
