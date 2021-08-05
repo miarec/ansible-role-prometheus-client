@@ -8,8 +8,10 @@ Node_exporter is a client that collects real time data about the server it is in
 ### Version information:
 
     node_exporter_version: "1.2.0"
+    node_exporter_download_url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
 
-node_exporter binary is manually installed, Choose the version of node_exporter to be installed, more information can be found at https://prometheus.io/download/ for latest downloads
+
+node_exporter binary is manually installed, Choose the version of node_exporter to be installed and the URL to download from, more information can be found at https://prometheus.io/download/ for latest downloads
 
 ### OS prep
 
@@ -30,7 +32,7 @@ None.
     - name: Install node_exporter
       hosts: all
       pre_tasks:
-        - include_vars: vars/custom.yml
+        - include_vars: vars/firewall.yml
           failed_when: false
       become: yes
       roles:

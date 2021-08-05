@@ -3,11 +3,10 @@
 
 # Check for current node_exporter install
 
-- name: check if node exporter exist
+- name: check if node_exporter exists
   stat:
     path: "{{ node_exporter_bin }}"
-  register: __check_node_exporter_present
-
+  register: __node_exporter
 
 # Prep system for node_exporter
 
@@ -31,11 +30,11 @@
 
 - name: download and unzip node exporter if not exist
   unarchive:
-    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    src: "{{ node_exporter_download_url }}"
     dest: /tmp/
     remote_src: yes
     validate_certs: no
-  when: __check_node_exporter_present.stat.exists == false
+  when: not __node_exporter.stat.exists
 
 - name: move the binary to the final destination
   copy:
@@ -45,7 +44,7 @@
     group: "{{ node_exporter_group }}"
     mode: 0755
     remote_src: yes
-  when: __check_node_exporter_present.stat.exists == false
+  when: not __node_exporter.stat.exists
 
 - name: clean
   file:
